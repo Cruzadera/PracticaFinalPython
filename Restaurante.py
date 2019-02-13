@@ -17,10 +17,11 @@ def agregar_plato():
     lista_ingredientes = input("Introduce los ingredientes que lleva este plato:\n")
     lista_alergenos = input("Introduce los alergenos que puede llevar este plato:\n")
     num_raciones = input("Introduce el número de raciones que se han preparado para este plato:\n")
+    precio = input("Introduce el precio del plato: \n")
 
     fichero_escritura_platos = open(ruta_platos, 'a', encoding='utf8')
     # Creamos la linea que queremos añadir al fichero con el método join
-    datos_plato = [nombre_plato, lista_ingredientes, lista_alergenos, num_raciones]
+    datos_plato = [nombre_plato, lista_ingredientes, lista_alergenos, num_raciones, precio]
     nuevo_plato = separador.join(datos_plato)
     fichero_escritura_platos.writelines(nuevo_plato + "\n")
 
@@ -102,7 +103,6 @@ def eliminar_usuario():
     print("El usuario " + id_usuario_borrar + " se ha borrado correctamente")
 
 
-
 def menu_usuarios():
     salir2 = False
     print("-------CONGIGURACIÓN DE USUARIOS--------")
@@ -133,12 +133,19 @@ def listar_repartidores():
         id_repartidor = linea.find(separador, 0)
         nombre = linea.find(separador, id_repartidor + 1)
         apellido = linea.find(separador, nombre + 1)
-        print("{0:<3} {1:<10} {2:<20}" .format(linea[0:id_repartidor], linea[id_repartidor + 1:nombre], linea[nombre + 1:apellido]))
+        print("{0:<3} {1:<10} {2:<20}".format(linea[0:id_repartidor], linea[id_repartidor + 1:nombre],
+                                              linea[nombre + 1:apellido]))
 
     fichero_lectura_repartidores.close()
 
-def crear_pedido():
 
+def crear_pedido():
+    print("---------CREACIÓN DEL PEDIDO----------")
+    listar_usuarios()
+    id_user = input("Indica tu id de usuario: ")
+    listar_platos()
+    platos = input("Introduce los números de platos que deseas añadir al pedido: ")
+    
 
 
 def listar_platos():
