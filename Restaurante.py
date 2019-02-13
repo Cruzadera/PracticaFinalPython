@@ -5,6 +5,9 @@
 # 3.	Dar de alta o baja a un usuario. 4.	Leer la lista de repartidores. 5.	Crear un pedido.
 
 ruta_platos = "./platos.txt"
+ruta_usuarios = "./usuarios.txt"
+ruta_repartidores = "./repartidores.txt"
+ruta_pedidos = "./pedidos.txt"
 separador = '|'
 
 
@@ -32,6 +35,7 @@ def eliminar_plato():
     lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
     fichero_borrado_plato = open(ruta_platos, 'w', encoding='utf8')
     numlines = 0
+
     for linea in lineas_fichero_plato:
         numlines += 1
         if numlines != linea_borrar:
@@ -40,16 +44,101 @@ def eliminar_plato():
     fichero_borrado_plato.close()
 
 
-def configuracion_usuarios():
-    pass
+def agregar_usuario():
+    nombre_usuario = input("Introduce el nombre del usuario: \n")
+    apellidos_usuario = input("Introduce los apellidos del usuario: \n")
+    direccion_usuario = input("Introduce la direccion del usuario: \n")
+    numero_usuario = input("Introduce un número de teléfono de contacto: \n")
+    # Le ponemos el id autoincremental al usuario
+    fichero_lectura_usuario = open(ruta_usuarios, 'r', encoding='utf8')
+    lista_usuarios = fichero_lectura_usuario.readlines()
+    if len(lista_usuarios) > 0:
+        ultima_linea = lista_usuarios[len(lista_usuarios) - 1]
+        posicion = ultima_linea.find(separador, 0)
+        ultimo_id = ultima_linea[0:posicion]
+        ultimo_id_num = int(ultimo_id)
+        id_usuario = ultimo_id_num + 1
+    else:
+        id_usuario = 1
+    # Convertimos el id a string
+    id_usuario = str(id_usuario)
+    fichero_escritura_usuario = open(ruta_usuarios, 'a', encoding='utf8')
+    # Creamos la linea que queremos añadir al fichero con el método join
+    datos_usuario = [id_usuario, nombre_usuario, apellidos_usuario, direccion_usuario, numero_usuario]
+    nuevo_usuario = separador.join(datos_usuario)
+    fichero_escritura_usuario.writelines(nuevo_usuario + "\n")
+
+    fichero_lectura_usuario.close()
+    fichero_escritura_usuario.close()
+    print("El usuario " + nombre_usuario + " se ha añadido correctamente")
+
+
+def listar_usuarios():
+    fichero_lectura_usuarios = open(ruta_usuarios, 'r', encoding='utf8')
+    lista_usuarios = fichero_lectura_usuarios.readlines()
+
+    print("--------LISTA DE USUARIOS---------")
+    for linea in lista_usuarios:
+        id_user = linea.find(separador, 0)
+        nombre = linea.find(separador, id_user + 1)
+        apellido = linea.find(separador, nombre + 1)
+        print(linea[0:id_user] + "\t" + linea[id_user + 1:nombre] + "\t" + linea[nombre + 1:apellido])
+
+    fichero_lectura_usuarios.close()
+
+
+def eliminar_usuario():
+    listar_usuarios()
+    # TODO: CONTROLAR LAS EXCEPCIONES DE ENTRADA DE PARÁMETROS
+    id_usuario_borrar = input("Introduce el número del usuario que deseas borrar: \n")
+    fichero_r_usuarios = open(ruta_usuarios, 'r', encoding='utf8').readlines()
+    fichero_w_usuarios = open(ruta_usuarios, 'w', encoding='utf8')
+    for linea in fichero_r_usuarios:
+        id_user = linea.find(separador, 0)
+        if id_usuario_borrar != linea[0:id_user]:
+            fichero_w_usuarios.write(linea)
+
+    fichero_w_usuarios.close()
+    print("El usuario " + id_usuario_borrar + " se ha borrado correctamente")
+
+
+
+def menu_usuarios():
+    salir2 = False
+    print("-------CONGIGURACIÓN DE USUARIOS--------")
+    print("\n1. DAR DE ALTA A UN USUARIO.")
+    print("2. DAR DE BAJA A UN USUARIO.")
+    print("3. SALIR")
+
+    opcion2 = int(input("Seleccione opción:\n"))
+
+    if opcion2 == 1:
+        agregar_usuario()
+    elif opcion2 == 2:
+        eliminar_usuario()
+    elif opcion2 == 3:
+        salir2 = True
+    else:
+        print("Elija una opción válida\n")
+
+    return salir2
 
 
 def listar_repartidores():
-    pass
+    fichero_lectura_repartidores = open(ruta_repartidores, 'r', encoding='utf8')
+    lista_repartidores = fichero_lectura_repartidores.readlines()
 
+    print("--------LISTA DE REPARTIDORES---------")
+    for linea in lista_repartidores:
+        id_repartidor = linea.find(separador, 0)
+        nombre = linea.find(separador, id_repartidor + 1)
+        apellido = linea.find(separador, nombre + 1)
+        print("{0:<3} {1:<10} {2:<20}" .format(linea[0:id_repartidor], linea[id_repartidor + 1:nombre], linea[nombre + 1:apellido]))
+
+    fichero_lectura_repartidores.close()
 
 def crear_pedido():
-    pass
+
 
 
 def listar_platos():
@@ -86,7 +175,7 @@ def menu_opciones():
     elif opcion == 2:
         eliminar_plato()
     elif opcion == 3:
-        configuracion_usuarios()
+        menu_usuarios()
     elif opcion == 4:
         listar_repartidores()
     elif opcion == 5:
