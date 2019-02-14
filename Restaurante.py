@@ -1,17 +1,14 @@
-# 1.	Crear un plato. Antes de crearlo, deben listarse todos los platos existentes (si los hubiera). No puede haber
-# platos repetidos. 
-# 2.	Eliminar un plato. Antes de eliminarlo, deben listarse todos los platos existentes (si los
-# hubiera). 
-# 3.	Dar de alta o baja a un usuario. 4.	Leer la lista de repartidores. 5.	Crear un pedido.
-
 ruta_platos = "./platos.txt"
 ruta_usuarios = "./usuarios.txt"
 ruta_repartidores = "./repartidores.txt"
 ruta_pedidos = "./pedidos.txt"
 separador = '|'
+espacio = ' '
 
 
 def agregar_plato():
+    if num_platos() > 0:
+        listar_platos()
     # TODO: Hay que controlarlo mendiante excepciones
     nombre_plato = input("Introduce el nombre del plato que desea añadir: \n")
     lista_ingredientes = input("Introduce los ingredientes que lleva este plato:\n")
@@ -110,7 +107,7 @@ def menu_usuarios():
     print("2. DAR DE BAJA A UN USUARIO.")
     print("3. SALIR")
 
-    opcion2 = int(input("Seleccione opción:\n"))
+    opcion2 = int(input("Seleccione opción: "))
 
     if opcion2 == 1:
         agregar_usuario()
@@ -139,13 +136,50 @@ def listar_repartidores():
     fichero_lectura_repartidores.close()
 
 
+def asignar_repartidor():
+    pass
+
+
 def crear_pedido():
     print("---------CREACIÓN DEL PEDIDO----------")
     listar_usuarios()
     id_user = input("Indica tu id de usuario: ")
     listar_platos()
-    platos = input("Introduce los números de platos que deseas añadir al pedido: ")
-    
+    platos_cadena = input("Introduce los números de platos (separados por espacios) que deseas añadir al pedido: ")
+    platos = platos_cadena.split(espacio)
+    # Ordenamos los números de los platos de menor a mayor
+    platos = sorted(platos)
+    # Comprobamos las raciones de los platos
+    lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
+    fichero_w_plato = open(ruta_platos, 'w', encoding='utf8')
+    numlines = 0
+    numplato = 0
+    # TODO: CONTROLAR SI LA RACIÓN LLEGA A 0
+    for linea in lineas_fichero_plato:
+        racion_editada = False
+        numlines += 1
+        pos_nombre = linea.find(separador, 0)
+        pos_ingredientes = linea.find(separador, pos_nombre + 1)
+        pos_alergenos = linea.find(separador, pos_ingredientes + 1)
+        pos_raciones = linea.find(separador, pos_alergenos + 1)
+        pos_precio = linea.find(separador, pos_raciones + 1)
+        if numlines == int(platos[numplato]):
+            racion = str(int(linea[pos_alergenos + 1:pos_raciones]) - 1)
+            dish = [linea[0:pos_nombre], linea[pos_nombre + 1: pos_ingredientes],
+                    linea[pos_ingredientes + 1:pos_alergenos], racion, linea[pos_raciones + 1: pos_precio]]
+            decremento_racion_plato = separador.join(dish)
+            linea = decremento_racion_plato
+            racion_editada = True
+            if numplato < len(platos) - 1:
+                numplato += 1
+
+        if racion_editada:
+            fichero_w_plato.write(linea + "\n")
+        else:
+            fichero_w_plato.write(linea)
+
+    fichero_w_plato.close()
+    asignar_repartidor()
 
 
 def listar_platos():
@@ -159,7 +193,20 @@ def listar_platos():
         if linea.strip():  # Si la linea no está en blanco
             posicion = linea.find(separador, 0)  # Buscamos hasta que posicion llega el nombre del plato
             print(numlineas, linea[0:posicion])  # Mostramos el nombre del plato a través de la anotación slice
+
     fichero_lectura_platos.close()
+
+
+def num_platos():
+    fichero_lectura_platos = open(ruta_platos, 'r', encoding='utf8')
+    lista_platos = fichero_lectura_platos.readlines()
+    numlineas = 0
+
+    for linea in lista_platos:
+        numlineas += 1
+
+    fichero_lectura_platos.close()
+    return numlineas
 
 
 def menu_opciones():
@@ -174,10 +221,9 @@ def menu_opciones():
     print("5. CREAR UN PEDIDO")
     print("6. SALIR")
 
-    opcion = int(input("Seleccione opción:\n"))
+    opcion = int(input("Seleccione opción: "))
 
     if opcion == 1:
-        listar_platos()
         agregar_plato()
     elif opcion == 2:
         eliminar_plato()
