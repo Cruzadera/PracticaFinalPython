@@ -1,10 +1,10 @@
-1|Baldomero|Llegate Ligero
-2|Germán|Ginés de los Santos
-3|Pancracia|Jiménez
-4|Mariano|Rajoy
-5|Inés|Arrimadas
-6|Irene|Montero
-7|Angela|Merkel
-8|Manuel|Macron
-9|Carles|Puigdemont
-10|Carolina|Bescansa
+1|Baldomero|Llegate Ligero|ocupado
+2|Germán|Ginés de los Santos|ocupado
+3|Pancracia|Jiménez|ocupado
+4|Mariano|Rajoy|ocupado
+5|Inés|Arrimadas|ocupado
+6|Irene|Montero|ocupado
+7|Angela|Merkel|ocupado
+8|Manuel|Macron|ocupado
+9|Carles|Puigdemont|libre
+10|Carolina|Bescansa|libre

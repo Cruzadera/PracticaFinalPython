@@ -137,8 +137,33 @@ def listar_repartidores():
 
 
 def asignar_repartidor():
-    pass
+    fichero_lectura_repartidores = open(ruta_repartidores, 'r', encoding='utf8')
+    lista_repartidores = fichero_lectura_repartidores.readlines()
+    fichero_escritura_repartidores = open(ruta_repartidores, 'w', encoding='utf8')
+    asignado = False
+    for linea in lista_repartidores:
+        flag = False
+        id_repartidor = linea.find(separador, 0)
+        nombre = linea.find(separador, id_repartidor + 1)
+        apellido = linea.find(separador, nombre + 1)
+        estado = linea.find(separador, apellido + 1)
+        if not asignado:
+            if linea[apellido + 1: estado] == "libre":
+                estado = "ocupado"
+                repartidor = [linea[0:id_repartidor], linea[id_repartidor + 1: nombre],
+                              linea[nombre + 1:apellido], estado]
+                repartidor_ocupado = separador.join(repartidor)
+                linea = repartidor_ocupado + "\n"
+                asignado = True
+                flag = True
+        if flag:
+            fichero_escritura_repartidores.write(linea)
+        else:
+            fichero_escritura_repartidores.write(linea)
 
+    fichero_lectura_repartidores.close()
+    fichero_escritura_repartidores.close()
+    return asignado
 
 def crear_pedido():
     print("---------CREACIÓN DEL PEDIDO----------")
@@ -179,7 +204,8 @@ def crear_pedido():
             fichero_w_plato.write(linea)
 
     fichero_w_plato.close()
-    asignar_repartidor()
+    tiene_repartidor = asignar_repartidor()
+
 
 
 def listar_platos():
