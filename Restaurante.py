@@ -1,9 +1,13 @@
+from datetime import datetime, timedelta, time
+
 ruta_platos = "./platos.txt"
 ruta_usuarios = "./usuarios.txt"
 ruta_repartidores = "./repartidores.txt"
 ruta_pedidos = "./pedidos.txt"
 separador = '|'
 espacio = ' '
+separador_hora = ':'
+intervalo = 15
 
 
 def agregar_plato():
@@ -136,34 +140,97 @@ def listar_repartidores():
     fichero_lectura_repartidores.close()
 
 
-def asignar_repartidor():
+def comprobar_hora(repartos, hours, minutos):
+    incremento_min = timedelta(minutes=intervalo)
+    hora_pedido = timedelta(hours=hours, minutes=minutos)
+    for reparto in repartos:
+        if not reparto == '':
+            formato_reparto = reparto.split(separador_hora)
+            hours = int(formato_reparto[0])
+            minus = int(formato_reparto[1])
+            reparto_format = timedelta(hours=hours, minutes=minus)
+            if hora_pedido == reparto_format:
+                return False
+            if ((hora_pedido + incremento_min) > reparto_format) and ((hora_pedido - incremento_min) < reparto_format):
+                return False
+    return True
+
+
+def asignar_repartidor(hora_introducida):
     fichero_lectura_repartidores = open(ruta_repartidores, 'r', encoding='utf8')
     lista_repartidores = fichero_lectura_repartidores.readlines()
     fichero_escritura_repartidores = open(ruta_repartidores, 'w', encoding='utf8')
     asignado = False
+    id_repartidor = 0
+
     for linea in lista_repartidores:
-        flag = False
-        id_repartidor = linea.find(separador, 0)
-        nombre = linea.find(separador, id_repartidor + 1)
-        apellido = linea.find(separador, nombre + 1)
-        estado = linea.find(separador, apellido + 1)
+        pos_id = linea.find(separador, 0)
+        pos_nombre = linea.find(separador, pos_id + 1)
+        pos_apellido = linea.find(separador, pos_nombre + 1)
+        pos_repartos = linea.find(separador, pos_apellido + 1)
         if not asignado:
-            if linea[apellido + 1: estado] == "libre":
-                estado = "ocupado"
-                repartidor = [linea[0:id_repartidor], linea[id_repartidor + 1: nombre],
-                              linea[nombre + 1:apellido], estado]
+            repartos = linea[pos_apellido + 1:pos_repartos].split(espacio)
+            tiene_hora = True
+            if len(repartos) > 1:  # Si tiene algún reparto asignado
+                formato_hora = hora_introducida.split(separador_hora)
+                hours = int(formato_hora[0])
+                minutos = int(formato_hora[1])
+                tiene_hora = comprobar_hora(repartos, hours, minutos)
+            if tiene_hora:
+                # Formateamos la hora introducida por el usuario en formato datetime
+                hora_introducida2 = datetime.strptime(hora_introducida, '%H:%S')
+                hora_formateada = datetime.strftime(hora_introducida2, '%H:%S')
+                # Volvemos a convertir la cadena en string para pasarla a la lista de horas
+                cadena_hora = str(hora_formateada)
+                repartos.append(cadena_hora)
+                repartos_cadena = espacio.join(repartos)
+                repartidor = [linea[0:pos_id], linea[pos_id + 1: pos_nombre],
+                              linea[pos_nombre + 1:pos_apellido], repartos_cadena]
                 repartidor_ocupado = separador.join(repartidor)
                 linea = repartidor_ocupado + "\n"
                 asignado = True
-                flag = True
-        if flag:
-            fichero_escritura_repartidores.write(linea)
-        else:
-            fichero_escritura_repartidores.write(linea)
+                id_repartidor = repartidor[0]
+
+        fichero_escritura_repartidores.write(linea)
 
     fichero_lectura_repartidores.close()
     fichero_escritura_repartidores.close()
-    return asignado
+    return id_repartidor
+
+
+def calcular_total(platos):
+    lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
+    fichero_w_plato = open(ruta_platos, 'w', encoding='utf8')
+    numlines = 0
+    numplato = 0
+    total = 0
+    for linea in lineas_fichero_plato:
+        numlines += 1
+        pos_nombre = linea.find(separador, 0)
+        pos_ingredientes = linea.find(separador, pos_nombre + 1)
+        pos_alergenos = linea.find(separador, pos_ingredientes + 1)
+        pos_raciones = linea.find(separador, pos_alergenos + 1)
+        pos_precio = linea.find(separador, pos_raciones + 1)
+        if numlines == int(platos[numplato]):
+            total += int(linea[pos_raciones + 1:pos_precio])
+            if numplato < len(platos) - 1:
+                numplato += 1
+
+        fichero_w_plato.write(linea)
+    fichero_w_plato.close()
+    return str(total)  # Convierto el total en cadena para que se escriba después en el fichero
+
+
+def guardar_pedido(id_user, platos, id_repartidor, hora_introducida):
+    total = calcular_total(platos)
+    fichero_wr_pedido = open(ruta_pedidos, 'a', encoding='utf8')
+    platos = espacio.join(platos)
+    # Creamos la linea que queremos añadir al fichero con el método join
+    datos_pedido = [id_user, platos, id_repartidor, total, hora_introducida]
+    nuevo_pedido = separador.join(datos_pedido)
+    fichero_wr_pedido.writelines(nuevo_pedido + "\n")
+    fichero_wr_pedido.close()
+
 
 def crear_pedido():
     print("---------CREACIÓN DEL PEDIDO----------")
@@ -175,13 +242,22 @@ def crear_pedido():
     # Ordenamos los números de los platos de menor a mayor
     platos = sorted(platos)
     # Comprobamos las raciones de los platos
+    comprobar_numraciones(platos)
+    hora_introducida = input("¿A qué hora desea recibir la entrega? - ")
+    id_repartidor = asignar_repartidor(hora_introducida)
+    if id_repartidor != 0:
+        guardar_pedido(id_user, platos, id_repartidor, hora_introducida)
+    else:
+        print("No hay repartidores disponibles en este momento. Intételo de nuevo más tarde.")
+
+
+def comprobar_numraciones(platos):
     lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
     fichero_w_plato = open(ruta_platos, 'w', encoding='utf8')
     numlines = 0
     numplato = 0
     # TODO: CONTROLAR SI LA RACIÓN LLEGA A 0
     for linea in lineas_fichero_plato:
-        racion_editada = False
         numlines += 1
         pos_nombre = linea.find(separador, 0)
         pos_ingredientes = linea.find(separador, pos_nombre + 1)
@@ -193,19 +269,12 @@ def crear_pedido():
             dish = [linea[0:pos_nombre], linea[pos_nombre + 1: pos_ingredientes],
                     linea[pos_ingredientes + 1:pos_alergenos], racion, linea[pos_raciones + 1: pos_precio]]
             decremento_racion_plato = separador.join(dish)
-            linea = decremento_racion_plato
-            racion_editada = True
+            linea = decremento_racion_plato + "\n"
             if numplato < len(platos) - 1:
                 numplato += 1
 
-        if racion_editada:
-            fichero_w_plato.write(linea + "\n")
-        else:
-            fichero_w_plato.write(linea)
-
+        fichero_w_plato.write(linea)
     fichero_w_plato.close()
-    tiene_repartidor = asignar_repartidor()
-
 
 
 def listar_platos():

@@ -1,5 +1,2 @@
-ensalada|lechuga, huevo, tomate|huevo|0|7
-pollo teriyaki|pollo, salsa teriyaki y arroz|pollo|2|7,50
-puchero|tocino, garbanzos, arroz, patata|tocino|1|1
-perrito caliente|pan de perrito, perrito, mayonesa, cebolla, queso|queso|0|3
-arroz con leche|arroz, canela, leche|leche|1|6
+ensalada|muchos|muchos|219|12
+arroz con leche|arroz, canela y leche|leche|98|10

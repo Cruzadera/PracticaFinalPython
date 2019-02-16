@@ -1,10 +1,10 @@
-1|Baldomero|Llegate Ligero|ocupado
-2|Germán|Ginés de los Santos|ocupado
-3|Pancracia|Jiménez|ocupado
-4|Mariano|Rajoy|ocupado
-5|Inés|Arrimadas|ocupado
-6|Irene|Montero|ocupado
-7|Angela|Merkel|ocupado
-8|Manuel|Macron|ocupado
-9|Carles|Puigdemont|libre
-10|Carolina|Bescansa|libre
+1|Care|Santos| 12:20 14:00 15:00 16:00 12:00 12:35 12:50 14:15 17:00 19:30 09:00 19:00
+2|Gabriel|García Márquez| 12:20 14:00 14:30 12:45 16:00 15:00
+3|Elisa|Levi| 12:30 12:15 13:00 12:45 14:10
+4|César|Mallorquí| 12:20 12:45
+5|Julia|Hoban| 12:40 12:22
+6|Javier|Castillo| 12:30 12:50 12:10
+7|Agatha|Christie| 12:30
+8|José|Saramago| 12:30
+9|Gemma|Lienas| 12:20 12:35
+10|Stieg|Larson| 12:40
