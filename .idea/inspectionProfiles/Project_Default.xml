@@ -8,6 +8,13 @@
         </list>
       </option>
     </inspection_tool>
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredNames">
+        <list>
+          <option value="exit" />
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="SpellCheckingInspection" enabled="true" level="TYPO" enabled_by_default="true">
       <option name="processCode" value="false" />
       <option name="processLiterals" value="false" />

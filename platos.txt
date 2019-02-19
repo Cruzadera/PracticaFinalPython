@@ -1,2 +1,5 @@
-ensalada|muchos|muchos|219|12
-arroz con leche|arroz, canela y leche|leche|98|10
+ensalada|muchos|muchos|210|12.0
+arroz con leche|arroz, canela y leche|leche|87|10.0
+tortitas|asdfh|asdf|0|5.0
+bocadillo de jamón|pan y jamón|jamón|9|4.0
+ensaladilla rusa|patatas, mayonesa, zanahoria, atún, guisantes|mayonesa|9|3.5

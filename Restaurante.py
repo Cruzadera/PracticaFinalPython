@@ -11,39 +11,53 @@ intervalo = 15
 
 
 def agregar_plato():
-    if num_platos() > 0:
-        listar_platos()
-    # TODO: Hay que controlarlo mendiante excepciones
-    nombre_plato = input("Introduce el nombre del plato que desea añadir: \n")
-    lista_ingredientes = input("Introduce los ingredientes que lleva este plato:\n")
-    lista_alergenos = input("Introduce los alergenos que puede llevar este plato:\n")
-    num_raciones = input("Introduce el número de raciones que se han preparado para este plato:\n")
-    precio = input("Introduce el precio del plato: \n")
+    correcto = False
+    while not correcto:
+        if num_platos() > 0:
+            listar_platos()
+        try:
+            nombre_plato = input("Introduce el nombre del plato que desea añadir: \n")
+            lista_ingredientes = input("Introduce los ingredientes que lleva este plato:\n")
+            lista_alergenos = input("Introduce los alergenos que puede llevar este plato:\n")
+            num_raciones = int(input("Introduce el número de raciones que se han preparado para este plato:\n"))
+            precio = float(input("Introduce el precio del plato: \n"))
+            # Pasamos los parametros numéricos a cadena
+            num_raciones = str(num_raciones)
+            precio = str(precio)
+            fichero_escritura_platos = open(ruta_platos, 'a', encoding='utf8')
+            # Creamos la linea que queremos añadir al fichero con el método join
+            datos_plato = [nombre_plato, lista_ingredientes, lista_alergenos, num_raciones, precio]
+            nuevo_plato = separador.join(datos_plato)
+            fichero_escritura_platos.writelines(nuevo_plato + "\n")
 
-    fichero_escritura_platos = open(ruta_platos, 'a', encoding='utf8')
-    # Creamos la linea que queremos añadir al fichero con el método join
-    datos_plato = [nombre_plato, lista_ingredientes, lista_alergenos, num_raciones, precio]
-    nuevo_plato = separador.join(datos_plato)
-    fichero_escritura_platos.writelines(nuevo_plato + "\n")
-
-    fichero_escritura_platos.close()
-    print("El plato " + nombre_plato + " se ha añadido correctamente")
+            fichero_escritura_platos.close()
+            print("El plato " + nombre_plato + " se ha añadido correctamente")
+            correcto = True
+        except (ValueError, TypeError):
+            print("Error. El tipo tiene que ser numérico o no dependiendo de lo que se pide. Intételo de nuevo")
+            correcto = False
 
 
 def eliminar_plato():
+    correcto = False
     listar_platos()
-    # TODO: Controlar que sea un número
-    linea_borrar = int(input("Introduce el número del plato que deseas borrar: \n"))
-    lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
-    fichero_borrado_plato = open(ruta_platos, 'w', encoding='utf8')
-    numlines = 0
+    while not correcto:
+        try:
+            linea_borrar = int(input("Introduce el número del plato que deseas borrar: \n"))
+            lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
+            fichero_borrado_plato = open(ruta_platos, 'w', encoding='utf8')
+            numlines = 0
 
-    for linea in lineas_fichero_plato:
-        numlines += 1
-        if numlines != linea_borrar:
-            fichero_borrado_plato.write(linea)
-    print("El plato número " + str(linea_borrar) + " se ha borrado correctamente.")
-    fichero_borrado_plato.close()
+            for linea in lineas_fichero_plato:
+                numlines += 1
+                if numlines != linea_borrar:
+                    fichero_borrado_plato.write(linea)
+            print("El plato número " + str(linea_borrar) + " se ha borrado correctamente.")
+            fichero_borrado_plato.close()
+            correcto = True
+        except ValueError:
+            print("Error. Tiene que ser un valor numérico. Intételo de nuevo")
+            correcto = False
 
 
 def agregar_usuario():
@@ -90,39 +104,48 @@ def listar_usuarios():
 
 
 def eliminar_usuario():
-    listar_usuarios()
-    # TODO: CONTROLAR LAS EXCEPCIONES DE ENTRADA DE PARÁMETROS
-    id_usuario_borrar = input("Introduce el número del usuario que deseas borrar: \n")
-    fichero_r_usuarios = open(ruta_usuarios, 'r', encoding='utf8').readlines()
-    fichero_w_usuarios = open(ruta_usuarios, 'w', encoding='utf8')
-    for linea in fichero_r_usuarios:
-        id_user = linea.find(separador, 0)
-        if id_usuario_borrar != linea[0:id_user]:
-            fichero_w_usuarios.write(linea)
+    correcto = False
+    while not correcto:
+        listar_usuarios()
+        try:
+            id_usuario_borrar = int(input("Introduce el número del usuario que deseas borrar: \n"))
+            id_usuario_borrar = str(id_usuario_borrar)  # Lo pasamos a cadena para leer el fichero
+            fichero_r_usuarios = open(ruta_usuarios, 'r', encoding='utf8').readlines()
+            fichero_w_usuarios = open(ruta_usuarios, 'w', encoding='utf8')
+            for linea in fichero_r_usuarios:
+                id_user = linea.find(separador, 0)
+                if id_usuario_borrar != linea[0:id_user]:
+                    fichero_w_usuarios.write(linea)
 
-    fichero_w_usuarios.close()
-    print("El usuario " + id_usuario_borrar + " se ha borrado correctamente")
+            fichero_w_usuarios.close()
+            print("El usuario " + id_usuario_borrar + " se ha borrado correctamente")
+            correcto = True
+        except ValueError:
+            print("Error. Tiene que ser un valor numérico. Intételo de nuevo")
+            correcto = False
 
 
 def menu_usuarios():
     salir2 = False
-    print("-------CONGIGURACIÓN DE USUARIOS--------")
-    print("\n1. DAR DE ALTA A UN USUARIO.")
-    print("2. DAR DE BAJA A UN USUARIO.")
-    print("3. SALIR")
+    while not salir2:
+        print("-------CONGIGURACIÓN DE USUARIOS--------")
+        print("\n1. DAR DE ALTA A UN USUARIO.")
+        print("2. DAR DE BAJA A UN USUARIO.")
+        print("3. SALIR")
 
-    opcion2 = int(input("Seleccione opción: "))
+        try:
+            opcion2 = int(input("Seleccione opción: "))
 
-    if opcion2 == 1:
-        agregar_usuario()
-    elif opcion2 == 2:
-        eliminar_usuario()
-    elif opcion2 == 3:
-        salir2 = True
-    else:
-        print("Elija una opción válida\n")
-
-    return salir2
+            if opcion2 == 1:
+                agregar_usuario()
+            elif opcion2 == 2:
+                eliminar_usuario()
+            elif opcion2 == 3:
+                salir2 = True
+            else:
+                print("Elija una opción válida\n")
+        except ValueError:
+            print("Error. Tiene que ser un valor numérico. Intételo de nuevo")
 
 
 def listar_repartidores():
@@ -212,7 +235,7 @@ def calcular_total(platos):
         pos_raciones = linea.find(separador, pos_alergenos + 1)
         pos_precio = linea.find(separador, pos_raciones + 1)
         if numlines == int(platos[numplato]):
-            total += int(linea[pos_raciones + 1:pos_precio])
+            total += float(linea[pos_raciones + 1:pos_precio])
             if numplato < len(platos) - 1:
                 numplato += 1
 
@@ -230,25 +253,34 @@ def guardar_pedido(id_user, platos, id_repartidor, hora_introducida):
     nuevo_pedido = separador.join(datos_pedido)
     fichero_wr_pedido.writelines(nuevo_pedido + "\n")
     fichero_wr_pedido.close()
+    return datos_pedido
 
 
 def crear_pedido():
-    print("---------CREACIÓN DEL PEDIDO----------")
-    listar_usuarios()
-    id_user = input("Indica tu id de usuario: ")
-    listar_platos()
-    platos_cadena = input("Introduce los números de platos (separados por espacios) que deseas añadir al pedido: ")
-    platos = platos_cadena.split(espacio)
-    # Ordenamos los números de los platos de menor a mayor
-    platos = sorted(platos)
-    # Comprobamos las raciones de los platos
-    comprobar_numraciones(platos)
-    hora_introducida = input("¿A qué hora desea recibir la entrega? - ")
-    id_repartidor = asignar_repartidor(hora_introducida)
-    if id_repartidor != 0:
-        guardar_pedido(id_user, platos, id_repartidor, hora_introducida)
-    else:
-        print("No hay repartidores disponibles en este momento. Intételo de nuevo más tarde.")
+    while True:
+        try:
+            print("---------CREACIÓN DEL PEDIDO----------")
+            listar_usuarios()
+            id_user = int(input("Indica tu id de usuario: "))
+            id_user = str(id_user)
+            listar_platos()
+            platos_cadena = input("Introduce los números de platos (separados por espacios) que deseas añadir al "
+                                  "pedido: ")
+            platos = platos_cadena.split(espacio)
+            # Ordenamos los números de los platos de menor a mayor
+            platos = sorted(platos)
+            # Comprobamos las raciones de los platos
+            if comprobar_numraciones(platos):
+                hora_introducida = input("¿A qué hora desea recibir la entrega? - ")
+                id_repartidor = asignar_repartidor(hora_introducida)
+                if id_repartidor != 0:
+                    datos_pedido = guardar_pedido(id_user, platos, id_repartidor, hora_introducida)
+                    print("Pedido realizado, su importe total es de: %2.f" % datos_pedido[2])
+                else:
+                    print("No hay repartidores disponibles en este momento. Intételo de nuevo más tarde.")
+                break
+        except (ValueError, TypeError):
+            pass
 
 
 def comprobar_numraciones(platos):
@@ -256,7 +288,7 @@ def comprobar_numraciones(platos):
     fichero_w_plato = open(ruta_platos, 'w', encoding='utf8')
     numlines = 0
     numplato = 0
-    # TODO: CONTROLAR SI LA RACIÓN LLEGA A 0
+    comprobado = False
     for linea in lineas_fichero_plato:
         numlines += 1
         pos_nombre = linea.find(separador, 0)
@@ -265,16 +297,21 @@ def comprobar_numraciones(platos):
         pos_raciones = linea.find(separador, pos_alergenos + 1)
         pos_precio = linea.find(separador, pos_raciones + 1)
         if numlines == int(platos[numplato]):
-            racion = str(int(linea[pos_alergenos + 1:pos_raciones]) - 1)
-            dish = [linea[0:pos_nombre], linea[pos_nombre + 1: pos_ingredientes],
-                    linea[pos_ingredientes + 1:pos_alergenos], racion, linea[pos_raciones + 1: pos_precio]]
-            decremento_racion_plato = separador.join(dish)
-            linea = decremento_racion_plato + "\n"
-            if numplato < len(platos) - 1:
-                numplato += 1
-
+            if not int(linea[pos_alergenos + 1: pos_raciones]) == 0:
+                racion = str(int(linea[pos_alergenos + 1:pos_raciones]) - 1)
+                dish = [linea[0:pos_nombre], linea[pos_nombre + 1: pos_ingredientes],
+                        linea[pos_ingredientes + 1:pos_alergenos], racion, linea[pos_raciones + 1: pos_precio]]
+                decremento_racion_plato = separador.join(dish)
+                linea = decremento_racion_plato + "\n"
+                if numplato < len(platos) - 1:
+                    numplato += 1
+                comprobado = True
+            else:
+                print("Para el plato " + linea[0:pos_nombre] + " no hay más raciones disponibles. Inténtelo de nuevo.")
+                comprobado = False
         fichero_w_plato.write(linea)
     fichero_w_plato.close()
+    return comprobado
 
 
 def listar_platos():
@@ -306,37 +343,36 @@ def num_platos():
 
 def menu_opciones():
     salir = False
-    print("----------------------------------------")
-    print("       RESTAURANTE TAPAS CAMILO")
-    print("________________________________________")
-    print("\n1. CREAR UN PLATO.")
-    print("2. ELIMINAR UN PLATO.")
-    print("3. CONFIGURACIÓN DE USUARIOS.")
-    print("4. LISTA DE REPARTIDORES.")
-    print("5. CREAR UN PEDIDO")
-    print("6. SALIR")
+    while not salir:
+        print("----------------------------------------")
+        print("       RESTAURANTE TAPAS CAMILO")
+        print("________________________________________")
+        print("\n1. CREAR UN PLATO.")
+        print("2. ELIMINAR UN PLATO.")
+        print("3. CONFIGURACIÓN DE USUARIOS.")
+        print("4. LISTA DE REPARTIDORES.")
+        print("5. CREAR UN PEDIDO")
+        print("6. SALIR")
 
-    opcion = int(input("Seleccione opción: "))
+        try:
+            opcion = int(input("Seleccione opción: "))
+            if opcion == 1:
+                agregar_plato()
+            elif opcion == 2:
+                eliminar_plato()
+            elif opcion == 3:
+                menu_usuarios()
+            elif opcion == 4:
+                listar_repartidores()
+            elif opcion == 5:
+                crear_pedido()
+            elif opcion == 6:
+                salir = True
+            else:
+                print("Elija una opción válida\n")
+        except TypeError:
+            print("Error. Tiene que ser un valor numérico. Intételo de nuevo")
 
-    if opcion == 1:
-        agregar_plato()
-    elif opcion == 2:
-        eliminar_plato()
-    elif opcion == 3:
-        menu_usuarios()
-    elif opcion == 4:
-        listar_repartidores()
-    elif opcion == 5:
-        crear_pedido()
-    elif opcion == 6:
-        salir = True
-    else:
-        print("Elija una opción válida\n")
 
-    return salir
-
-
-while True:
-    salir = menu_opciones()
-    if salir:
-        break
+# MAIN
+menu_opciones()
