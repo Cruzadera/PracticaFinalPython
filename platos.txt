@@ -1,5 +1,5 @@
-ensalada|muchos|muchos|210|12.0
-arroz con leche|arroz, canela y leche|leche|87|10.0
-tortitas|asdfh|asdf|0|5.0
-bocadillo de jamón|pan y jamón|jamón|9|4.0
-ensaladilla rusa|patatas, mayonesa, zanahoria, atún, guisantes|mayonesa|9|3.5
+ensalada|muchos|muchos|207|12.00
+arroz con leche|arroz, canela y leche|leche|86|10.00
+tortitas|asdfh|asdf|0|5.00
+bocadillo de jamón|pan y jamón|jamón|8|4.00
+ensaladilla rusa|patatas, mayonesa, zanahoria, atún, guisantes|mayonesa|5|3.50

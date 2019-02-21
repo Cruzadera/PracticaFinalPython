@@ -64,6 +64,7 @@ def agregar_usuario():
     nombre_usuario = input("Introduce el nombre del usuario: \n")
     apellidos_usuario = input("Introduce los apellidos del usuario: \n")
     direccion_usuario = input("Introduce la direccion del usuario: \n")
+    # Considero el número de teléfono como cadena porque se puede meter el prefijo de dicho número
     numero_usuario = input("Introduce un número de teléfono de contacto: \n")
     # Le ponemos el id autoincremental al usuario
     fichero_lectura_usuario = open(ruta_usuarios, 'r', encoding='utf8')
@@ -275,12 +276,12 @@ def crear_pedido():
                 id_repartidor = asignar_repartidor(hora_introducida)
                 if id_repartidor != 0:
                     datos_pedido = guardar_pedido(id_user, platos, id_repartidor, hora_introducida)
-                    print("Pedido realizado, su importe total es de: %2.f" % datos_pedido[2])
+                    print("Pedido realizado, su importe total es de: " + datos_pedido[3] + "€")
                 else:
                     print("No hay repartidores disponibles en este momento. Intételo de nuevo más tarde.")
                 break
-        except (ValueError, TypeError):
-            pass
+        except TypeError:
+            print("Error")
 
 
 def comprobar_numraciones(platos):

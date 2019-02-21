@@ -1,9 +1,9 @@
-1|Care|Santos| 9:00 19:00 11:00 12:59 12:44 12:00 11:30 14:00
-2|Gabriel|García Márquez| 13:00 12:00 11:00 11:24 14:00
+1|Care|Santos| 9:00 19:00 11:00 12:59 12:44 12:00 11:30 14:00 14:35 14:50 10:00 15:30
+2|Gabriel|García Márquez| 13:00 12:00 11:00 11:24 14:00 12:33
 3|Elisa|Levi| 11:00 12:00 11:23 13:00 14:00
 4|César|Mallorquí| 11:00 11:23 12:00
 5|Julia|Hoban| 12:56 11:23
-6|Javier|Castillo|
+6|Javier|Castillo| 11:22
 7|Agatha|Christie|
 8|José|Saramago|
 9|Gemma|Lienas|
