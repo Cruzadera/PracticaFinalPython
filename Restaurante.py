@@ -38,23 +38,42 @@ def agregar_plato():
             correcto = False
 
 
+def comprobar_plato(plato):
+    comprobado = False
+    fichero_lectura_usuarios = open(ruta_usuarios, 'r', encoding='utf8')
+    lista_usuarios = fichero_lectura_usuarios.readlines()
+    numlinea = 0
+
+    for linea in lista_usuarios:
+        numlinea += 1
+        if plato == numlinea:
+            comprobado = True
+
+    fichero_lectura_usuarios.close()
+    return comprobado
+
+
 def eliminar_plato():
     correcto = False
     listar_platos()
     while not correcto:
         try:
-            linea_borrar = int(input("Introduce el número del plato que deseas borrar: \n"))
-            lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
-            fichero_borrado_plato = open(ruta_platos, 'w', encoding='utf8')
-            numlines = 0
+            plato_borrar = int(input("Introduce el número del plato que deseas borrar: \n"))
+            if comprobar_plato(plato_borrar):
+                lineas_fichero_plato = open(ruta_platos, 'r', encoding='utf8').readlines()
+                fichero_borrado_plato = open(ruta_platos, 'w', encoding='utf8')
+                numlines = 0
 
-            for linea in lineas_fichero_plato:
-                numlines += 1
-                if numlines != linea_borrar:
-                    fichero_borrado_plato.write(linea)
-            print("El plato número " + str(linea_borrar) + " se ha borrado correctamente.")
-            fichero_borrado_plato.close()
-            correcto = True
+                for linea in lineas_fichero_plato:
+                    numlines += 1
+                    if numlines != plato_borrar:
+                        fichero_borrado_plato.write(linea)
+                print("El plato número " + str(plato_borrar) + " se ha borrado correctamente.")
+                fichero_borrado_plato.close()
+                correcto = True
+            else:
+                print("Error. Por favor, introduce un número de plato existente.")
+                correcto = False
         except ValueError:
             print("Error. Tiene que ser un valor numérico. Intételo de nuevo")
             correcto = False
@@ -104,6 +123,20 @@ def listar_usuarios():
     fichero_lectura_usuarios.close()
 
 
+def comprobar_usuario(id_usuario):
+    comprobado = False
+    fichero_lectura_usuarios = open(ruta_usuarios, 'r', encoding='utf8')
+    lista_usuarios = fichero_lectura_usuarios.readlines()
+
+    for linea in lista_usuarios:
+        id_user = linea.find(separador, 0)
+        if id_usuario == linea[0:id_user]:
+            comprobado = True
+
+    fichero_lectura_usuarios.close()
+    return comprobado
+
+
 def eliminar_usuario():
     correcto = False
     while not correcto:
@@ -111,16 +144,20 @@ def eliminar_usuario():
         try:
             id_usuario_borrar = int(input("Introduce el número del usuario que deseas borrar: \n"))
             id_usuario_borrar = str(id_usuario_borrar)  # Lo pasamos a cadena para leer el fichero
-            fichero_r_usuarios = open(ruta_usuarios, 'r', encoding='utf8').readlines()
-            fichero_w_usuarios = open(ruta_usuarios, 'w', encoding='utf8')
-            for linea in fichero_r_usuarios:
-                id_user = linea.find(separador, 0)
-                if id_usuario_borrar != linea[0:id_user]:
-                    fichero_w_usuarios.write(linea)
+            if comprobar_usuario(id_usuario_borrar):
+                fichero_r_usuarios = open(ruta_usuarios, 'r', encoding='utf8').readlines()
+                fichero_w_usuarios = open(ruta_usuarios, 'w', encoding='utf8')
+                for linea in fichero_r_usuarios:
+                    id_user = linea.find(separador, 0)
+                    if id_usuario_borrar != linea[0:id_user]:
+                        fichero_w_usuarios.write(linea)
 
-            fichero_w_usuarios.close()
-            print("El usuario " + id_usuario_borrar + " se ha borrado correctamente")
-            correcto = True
+                fichero_w_usuarios.close()
+                print("El usuario " + id_usuario_borrar + " se ha borrado correctamente")
+                correcto = True
+            else:
+                print("Error. Por favor, introduce un número de usuario existente.")
+                correcto = False
         except ValueError:
             print("Error. Tiene que ser un valor numérico. Intételo de nuevo")
             correcto = False
